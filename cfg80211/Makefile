@@ -1,18 +1,31 @@
-obj-$(CONFIG_CFG80211) += cfg80211.o
-obj-$(CONFIG_LIB80211) += lib80211.o
-obj-$(CONFIG_LIB80211_CRYPT_WEP) += lib80211_crypt_wep.o
-obj-$(CONFIG_LIB80211_CRYPT_CCMP) += lib80211_crypt_ccmp.o
-obj-$(CONFIG_LIB80211_CRYPT_TKIP) += lib80211_crypt_tkip.o
+obj-m += cfg80211.o
 
 cfg80211-y += core.o sysfs.o radiotap.o util.o reg.o scan.o nl80211.o
 cfg80211-y += mlme.o ibss.o sme.o chan.o ethtool.o mesh.o
-cfg80211-$(CONFIG_CFG80211_DEBUGFS) += debugfs.o
-cfg80211-$(CONFIG_CFG80211_WEXT) += wext-compat.o wext-sme.o
-cfg80211-$(CONFIG_CFG80211_INTERNAL_REGDB) += regdb.o
+cfg80211-y += wext-compat.o wext-sme.o
+cfg80211-y += regdb.o
+#cfg80211-y += debugfs.o
 
 ccflags-y += -D__CHECK_ENDIAN__
+ccflags-y += -DCONFIG_CFG80211
+ccflags-y += -DCONFIG_CFG80211_DEFAULT_PS
+ccflags-y += -DCONFIG_CFG80211_WEXT
+#ccflags-y += -DCONFIG_CFG80211_INTERNAL_REGDB
+ccflags-y += -DCONFIG_NL80211_TESTMODE
 
-$(obj)/regdb.c: $(src)/db.txt $(src)/genregdb.awk
-	@$(AWK) -f $(src)/genregdb.awk < $< > $@
+ATH_ROOT = $(src)/..
 
-clean-files := regdb.c
+ccflags-y += -I$(ATH_ROOT)/include
+ccflags-y += -I$(ATH_ROOT)/cfg80211
+ccflags-y += -include $(ATH_ROOT)/include/linux/ieee80211.h
+ccflags-y += -include $(ATH_ROOT)/include/linux/nl80211.h
+ccflags-y += -include $(ATH_ROOT)/include/net/cfg80211.h
+ccflags-y += -include $(ATH_ROOT)/include/linux/compat-2.6.h
+
+ldflags-y += --strip-debug
+
+modules:
+	$(MAKE) -C $(KERNEL_OUT) M=`pwd` ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) modules
+
+clean:
+	$(MAKE) -C $(KERNEL_OUT) M=`pwd` ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) clean

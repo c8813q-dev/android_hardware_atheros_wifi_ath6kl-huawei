@@ -22,43 +22,51 @@
 # Author(s): ="Atheros"
 #------------------------------------------------------------------------------
 
-obj-$(CONFIG_ATH6KL_SDIO) := ath6kl_sdio.o
-ath6kl_sdio-y += debug.o
-ath6kl_sdio-y += debugfs_pri.o
-ath6kl_sdio-y += hif.o
-ath6kl_sdio-y += htc.o
-ath6kl_sdio-y += bmi.o
-ath6kl_sdio-y += cfg80211.o
-ath6kl_sdio-y += cfg80211_btcoex.o
-ath6kl_sdio-y += pm.o
-ath6kl_sdio-y += init.o
-ath6kl_sdio-y += main.o
-ath6kl_sdio-y += txrx.o
-ath6kl_sdio-y += wmi.o
-ath6kl_sdio-y += wmi_btcoex.o
-ath6kl_sdio-y += sdio.o
-ath6kl_sdio-y += platform.o
-ath6kl_sdio-y += softmac.o
-ath6kl_sdio-y += wmiconfig.o
-ath6kl_sdio-y += recovery.o
-ath6kl_sdio-$(CONFIG_NL80211_TESTMODE) += testmode.o
-
-obj-$(CONFIG_ATH6KL_USB) += ath6kl_usb.o
-ath6kl_usb-y += debug.o
-ath6kl_usb-y += hif.o
-ath6kl_usb-y += htc.o
-ath6kl_usb-y += bmi.o
-ath6kl_usb-y += cfg80211.o
-ath6kl_usb-y += cfg80211_btcoex.o
-ath6kl_usb-y += pm.o
-ath6kl_usb-y += init.o
-ath6kl_usb-y += main.o
-ath6kl_usb-y += txrx.o
-ath6kl_usb-y += wmi.o
-ath6kl_usb-y += wmi_btcoex.o
-ath6kl_usb-y += usb.o
-ath6kl_usb-y += wmiconfig.o
-ath6kl_usb-y += regd.o
-ath6kl_usb-$(CONFIG_NL80211_TESTMODE) += testmode.o
+obj-m += ar6000.o
+ar6000-y += debug.o
+ar6000-y += debugfs_pri.o
+ar6000-y += hif.o
+ar6000-y += htc.o
+ar6000-y += bmi.o
+ar6000-y += cfg80211.o
+ar6000-y += cfg80211_btcoex.o
+ar6000-y += pm.o
+ar6000-y += init.o
+ar6000-y += main.o
+ar6000-y += txrx.o
+ar6000-y += wmi.o
+ar6000-y += wmi_btcoex.o
+ar6000-y += sdio.o
+ar6000-y += platform.o
+ar6000-y += softmac.o
+ar6000-y += wmiconfig.o
+ar6000-y += recovery.o
+ar6000-y += += testmode.o
 
 ccflags-y += -D__CHECK_ENDIAN__
+ccflags-y += -DCONFIG_ATH6KL_DEBUG
+ccflags-y += -DCONFIG_CFG80211
+ccflags-y += -DCONFIG_CFG80211_DEFAULT_PS
+ccflags-y += -DCONFIG_CFG80211_WEXT
+ccflags-y += -DCONFIG_NL80211_TESTMODE
+
+ccflags-y += -DFIX_HUAWEI_BUTCHERING
+
+ATH_ROOT = $(src)/..
+
+ccflags-y += -I$(ATH_ROOT)/include
+ccflags-y += -I$(ATH_ROOT)/ar6000
+ccflags-y += -include $(ATH_ROOT)/include/linux/ieee80211.h
+ccflags-y += -include $(ATH_ROOT)/include/linux/nl80211.h
+ccflags-y += -include $(ATH_ROOT)/include/net/cfg80211.h
+ccflags-y += -include $(ATH_ROOT)/include/linux/compat-2.6.h
+
+ldflags-y += --strip-debug
+
+KBUILD_EXTRA_SYMBOLS = $(ATH_ROOT)/cfg80211/Module.symvers
+
+modules:
+	$(MAKE) -C $(KERNEL_OUT) M=`pwd` ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) modules
+
+clean:
+	$(MAKE) -C $(KERNEL_OUT) M=`pwd` ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) clean
