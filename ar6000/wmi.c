@@ -19,8 +19,8 @@
 #include "core.h"
 #include "debug.h"
 #include "testmode.h"
-#include "../regd.h"
-#include "../regd_common.h"
+#include "regd_ath.h"
+#include "regd_common.h"
 #include "btc.h"
 #include "debugfs_pri.h"
 
