@@ -58,6 +58,7 @@ ath6kl_usb-y += wmi.o
 ath6kl_usb-y += wmi_btcoex.o
 ath6kl_usb-y += usb.o
 ath6kl_usb-y += wmiconfig.o
+ath6kl_usb-y += regd.o
 ath6kl_usb-$(CONFIG_NL80211_TESTMODE) += testmode.o
 
 ccflags-y += -D__CHECK_ENDIAN__
