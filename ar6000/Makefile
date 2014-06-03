@@ -41,7 +41,7 @@ ar6000-y += platform.o
 ar6000-y += softmac.o
 ar6000-y += wmiconfig.o
 ar6000-y += recovery.o
-ar6000-y += += testmode.o
+ar6000-y += testmode.o
 
 ccflags-y += -D__CHECK_ENDIAN__
 ccflags-y += -DCONFIG_ATH6KL_DEBUG
