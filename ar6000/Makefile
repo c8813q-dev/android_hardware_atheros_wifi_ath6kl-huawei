@@ -40,6 +40,7 @@ ar6000-y += sdio.o
 ar6000-y += platform.o
 ar6000-y += softmac.o
 ar6000-y += wmiconfig.o
+ar6000-y += regd.o
 ar6000-y += recovery.o
 ar6000-y += testmode.o
 
